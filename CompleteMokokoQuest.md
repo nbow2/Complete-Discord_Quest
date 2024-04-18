@@ -16,18 +16,29 @@ let SelectedChannelStore = Object.values(wpRequire.c).find(x => x?.exports?.defa
 let UserStore = Object.values(wpRequire.c).find(x => x?.exports?.default?.getCurrentUser).exports.default;
 let sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 
-let vcId = SelectedChannelStore.getVoiceChannelId()
-let streamId = `guild:${ChannelStore.getChannel(vcId).guild_id}:${vcId}:${UserStore.getCurrentUser().id}`
+let vc = ChannelStore.getChannel(SelectedChannelStore.getVoiceChannelId())
+let streamId
+if(vc.guild_id) {
+	streamId = `guild:${vc.id}:${vc.id}:${UserStore.getCurrentUser().id}`
+} else {
+	streamId = `call:${vc.id}:${UserStore.getCurrentUser().id}`
+}
 let heartbeat = async function() {
 	while(true) {
 		let res = await api.post({url: "/quests/1227395355193118750/heartbeat", body: {stream_key:streamId}})
 		let progress = res.body.stream_progress_seconds
 		
+		console.log(`Quest progress: ${progress}/900`)
+		
 		if(progress >= 900) break;
 		await sleep(30 * 1000)
 	}
+	
+	console.log("Quest completed!")
 }
 heartbeat()
 ```
 7. Keep the stream running for 15 minutes
 8. You can now claim the decoration in User Settings -> Gift Inventory!
+
+You can track the progress by looking at the `Quest progress:` prints in the Console tab, or by reopening the Gift Inventory tab in settings. The progress should update every 30s.
