@@ -11,21 +11,14 @@ let wpRequire;
 window.webpackChunkdiscord_app.push([[ Math.random() ], {}, (req) => { wpRequire = req; }]);
 
 let api = Object.values(wpRequire.c).find(x => x?.exports?.getAPIBaseURL).exports.HTTP;
-let ChannelStore = Object.values(wpRequire.c).find(x => x?.exports?.default?.getSortedPrivateChannels).exports.default;
-let SelectedChannelStore = Object.values(wpRequire.c).find(x => x?.exports?.default?.getVoiceChannelId).exports.default;
-let UserStore = Object.values(wpRequire.c).find(x => x?.exports?.default?.getCurrentUser).exports.default;
-let sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
+let ApplicationStreamingStore = Object.values(wpRequire.c).find(x => x?.exports?.default?.getStreamerActiveStreamMetadata).exports.default;
+let encodeStreamKey = Object.values(wpRequire.c).find(x => x?.exports?.encodeStreamKey).exports.encodeStreamKey;
+let sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-let vc = ChannelStore.getChannel(SelectedChannelStore.getVoiceChannelId())
-let streamId
-if(vc.guild_id) {
-	streamId = `guild:${vc.guild_id}:${vc.id}:${UserStore.getCurrentUser().id}`
-} else {
-	streamId = `call:${vc.id}:${UserStore.getCurrentUser().id}`
-}
+let streamId = encodeStreamKey(ApplicationStreamingStore.getCurrentUserActiveStream())
 let heartbeat = async function() {
 	while(true) {
-		let res = await api.post({url: "/quests/1227395355193118750/heartbeat", body: {stream_key:streamId}})
+		let res = await api.post({url: "/quests/1227395355193118750/heartbeat", body: {stream_key: streamId}})
 		let progress = res.body.stream_progress_seconds
 		
 		console.log(`Quest progress: ${progress}/900`)
@@ -42,3 +35,5 @@ heartbeat()
 8. You can now claim the decoration in User Settings -> Gift Inventory!
 
 You can track the progress by looking at the `Quest progress:` prints in the Console tab, or by reopening the Gift Inventory tab in settings. The progress should update every 30s.
+
+You do NOT need anybody watching your stream for this to work. You can be alone in vc just fine.
