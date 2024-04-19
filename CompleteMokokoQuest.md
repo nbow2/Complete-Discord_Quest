@@ -19,7 +19,7 @@ let sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 let vc = ChannelStore.getChannel(SelectedChannelStore.getVoiceChannelId())
 let streamId
 if(vc.guild_id) {
-	streamId = `guild:${vc.id}:${vc.id}:${UserStore.getCurrentUser().id}`
+	streamId = `guild:${vc.guild_id}:${vc.id}:${UserStore.getCurrentUser().id}`
 } else {
 	streamId = `call:${vc.id}:${UserStore.getCurrentUser().id}`
 }
