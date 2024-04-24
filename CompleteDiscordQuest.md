@@ -1,4 +1,4 @@
-## Complete Discord Mokoko Quest
+## Complete Discord Genshin Quest
 How to use this script:
 1. Accept the quest under User Settings -> Gift Inventory
 2. Join a vc
@@ -18,7 +18,7 @@ let sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 let streamId = encodeStreamKey(ApplicationStreamingStore.getCurrentUserActiveStream())
 let heartbeat = async function() {
 	while(true) {
-		let res = await api.post({url: "/quests/1227395355193118750/heartbeat", body: {stream_key: streamId}})
+		let res = await api.post({url: "/quests/1227767407154561034/heartbeat", body: {stream_key: streamId}})
 		let progress = res.body.stream_progress_seconds
 		
 		console.log(`Quest progress: ${progress}/900`)
@@ -32,7 +32,7 @@ let heartbeat = async function() {
 heartbeat()
 ```
 7. Keep the stream running for 15 minutes
-8. You can now claim the decoration in User Settings -> Gift Inventory!
+8. You can now claim the reward in User Settings -> Gift Inventory!
 
 You can track the progress by looking at the `Quest progress:` prints in the Console tab, or by reopening the Gift Inventory tab in settings. The progress should update every 30s.
 
