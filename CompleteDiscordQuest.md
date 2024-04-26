@@ -7,7 +7,7 @@ How to use this script:
 1. Accept the quest under User Settings -> Gift Inventory
 2. Join a vc
 3. Stream any window (can be notepad or something)
-4. Press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd> to open DevTools (see [this](https://www.reddit.com/r/discordapp/comments/sc61n3/comment/hu4fw5x/) if it doesn't work)
+4. Press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd> to open DevTools
 5. Go to the `Console` tab
 6. Paste the following code and hit enter:
 ```js
@@ -49,3 +49,19 @@ if(!quest) {
 You can track the progress by looking at the `Quest progress:` prints in the Console tab, or by reopening the Gift Inventory tab in settings. The progress should update every 30s.
 
 You do NOT need anybody watching your stream for this to work. You can be alone in vc just fine.
+
+## FAQ
+
+**Q: Ctrl + Shift + I doesn't work**
+
+A: Either download the [canary client](https://discord.com/api/downloads/distributions/app/installers/latest?channel=canary&platform=win&arch=x64), or use [this](https://www.reddit.com/r/discordapp/comments/sc61n3/comment/hu4fw5x/) to enable DevTools on stable
+
+
+**Q: I get an error saying "Unauthorized"**
+
+A: Discord has patched the script from working in browsers. Use the desktop app, or alternatively find some extension which lets you change your User-Agent and append the string `Electron/` anywhere in it
+
+
+**Q: I get a different error**
+
+A: Make sure you've started streaming *before* running the script
