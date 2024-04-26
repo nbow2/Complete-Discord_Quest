@@ -1,4 +1,8 @@
 ## Complete Recent Discord Quest
+> [!NOTE]
+> This no longer works in browser! If you absolutely need to use browser instead of desktop app, use an extension to add the string `Electron/` anywhere in your user-agent.
+>
+
 How to use this script:
 1. Accept the quest under User Settings -> Gift Inventory
 2. Join a vc
