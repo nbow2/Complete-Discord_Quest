@@ -54,7 +54,7 @@ You do NOT need anybody watching your stream for this to work. You can be alone 
 
 **Q: Ctrl + Shift + I doesn't work**
 
-A: Either download the [canary client](https://discord.com/api/downloads/distributions/app/installers/latest?channel=canary&platform=win&arch=x64), or use [this](https://www.reddit.com/r/discordapp/comments/sc61n3/comment/hu4fw5x/) to enable DevTools on stable
+A: Either download the [ptb client](https://discord.com/api/downloads/distributions/app/installers/latest?channel=ptb&platform=win&arch=x64), or use [this](https://www.reddit.com/r/discordapp/comments/sc61n3/comment/hu4fw5x/) to enable DevTools on stable
 
 
 **Q: I get an error saying "Unauthorized"**
