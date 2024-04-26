@@ -7,7 +7,7 @@ How to use this script:
 1. Accept the quest under User Settings -> Gift Inventory
 2. Join a vc
 3. Stream any window (can be notepad or something)
-4. Press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd> to open DevTools
+4. Press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd> to open DevTools (see [this](https://www.reddit.com/r/discordapp/comments/sc61n3/comment/hu4fw5x/) if it doesn't work)
 5. Go to the `Console` tab
 6. Paste the following code and hit enter:
 ```js
