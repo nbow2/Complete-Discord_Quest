@@ -6,25 +6,36 @@
 How to use this script:
 1. Accept the quest under User Settings -> Gift Inventory
 2. Join a vc
-3. Stream any window (can be notepad or something)
-4. Press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd> to open DevTools
-5. Go to the `Console` tab
-6. Paste the following code and hit enter:
+3. **Join the same vc on an alt**
+4. Stream any window (can be notepad or something)
+5. Press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd> to open DevTools
+6. Go to the `Console` tab
+7. Paste the following code and hit enter:
 ```js
 let wpRequire;
 window.webpackChunkdiscord_app.push([[ Math.random() ], {}, (req) => { wpRequire = req; }]);
 
 let api = Object.values(wpRequire.c).find(x => x?.exports?.getAPIBaseURL).exports.HTTP;
 let ApplicationStreamingStore = Object.values(wpRequire.c).find(x => x?.exports?.default?.getStreamerActiveStreamMetadata).exports.default;
+let VoiceStateStore = Object.values(wpRequire.c).find(x => x?.exports?.default?.getCurrentClientVoiceChannelId).exports.default;
 let QuestsStore = Object.values(wpRequire.c).find(x => x?.exports?.default?.getQuest).exports.default;
 let encodeStreamKey = Object.values(wpRequire.c).find(x => x?.exports?.encodeStreamKey).exports.encodeStreamKey;
 let sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-let quest = [...QuestsStore.quests.values()].find(x => x.userStatus?.enrolledAt && !x.userStatus?.completedAt)
-if(!quest) {
+let quest = [...QuestsStore.quests.values()].find(x => x.userStatus?.enrolledAt && !x.userStatus?.completedAt && new Date(x.config.expiresAt).getTime() > Date.now())
+let streamData = ApplicationStreamingStore.getCurrentUserActiveStream()
+let isApp = navigator.userAgent.includes("Electron/")
+let isAloneInVC = streamData && Object.keys(VoiceStateStore.getVoiceStatesForChannel(streamData.channelId)).length === 1
+if(!isApp) {
+	console.log("This no longer works in browser. Use the desktop app!")
+} else if(!quest) {
 	console.log("You don't have any uncompleted quests!")
+} else if(!streamData) {
+	console.log("You haven't started a stream!")
+} else if(isAloneInVC) {
+	console.log("You need to join the vc on 1 other account!")
 } else {
-	let streamId = encodeStreamKey(ApplicationStreamingStore.getCurrentUserActiveStream())
+	let streamId = encodeStreamKey(streamData)
 	let secondsNeeded = quest.config.streamDurationRequirementMinutes * 60
 	let heartbeat = async function() {
 		console.log("Completing quest", quest.config.messages.gameTitle, "-", quest.config.messages.questName)
@@ -48,8 +59,6 @@ if(!quest) {
 
 You can track the progress by looking at the `Quest progress:` prints in the Console tab, or by reopening the Gift Inventory tab in settings. The progress should update every 30s.
 
-You do NOT need anybody watching your stream for this to work. You can be alone in vc just fine.
-
 ## FAQ
 
 **Q: Ctrl + Shift + I doesn't work**
@@ -59,7 +68,9 @@ A: Either download the [ptb client](https://discord.com/api/downloads/distributi
 
 **Q: I get an error saying "Unauthorized"**
 
-A: Discord has patched the script from working in browsers. Use the desktop app, or alternatively find some extension which lets you change your User-Agent and append the string `Electron/` anywhere in it
+A: Discord has patched the script from working in browsers. Use the desktop app, or alternatively find some extension which lets you change your User-Agent and append the string `Electron/` anywhere in it.
+
+They have also started checking how many people are in the vc, so make sure you join it on at least 1 other account.
 
 
 **Q: I get a different error**
