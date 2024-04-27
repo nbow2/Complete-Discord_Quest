@@ -29,9 +29,10 @@ if(!isApp) {
 } else if(!quest) {
 	console.log("You don't have any uncompleted quests!")
 } else {
+	let pid = Math.floor(Math.random() * 30000) + 1000
 	ApplicationStreamingStore.getStreamerActiveStreamMetadata = () => ({
 		id: quest.config.applicationId,
-		pid: Math.floor(Math.random() * 30000) + 1000,
+		pid,
 		sourceName: null
 	})
 	
