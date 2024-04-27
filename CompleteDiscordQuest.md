@@ -1,6 +1,9 @@
 ## Complete Recent Discord Quest
 > [!NOTE]
 > This no longer works in browser! If you absolutely need to use browser instead of desktop app, use an extension to add the string `Electron/` anywhere in your user-agent.
+
+> [!NOTE]
+> This no longer works if you're alone in vc! Somebody else has to join you!
 >
 
 How to use this script:
@@ -75,4 +78,4 @@ They have also started checking how many people are in the vc, so make sure you 
 
 **Q: I get a different error**
 
-A: Make sure you've started streaming *before* running the script
+A: Make sure you've started streaming *before* running the script. Also make sure you're copy/pasting it correctly.
