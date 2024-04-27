@@ -1,6 +1,6 @@
 ## Complete Recent Discord Quest
 > [!NOTE]
-> This no longer works in browser! If you absolutely need to use browser instead of desktop app, use an extension to add the string `Electron/` anywhere in your user-agent.
+> This no longer works in browser!
 
 > [!NOTE]
 > This no longer works if you're alone in vc! Somebody else has to join you!
@@ -18,43 +18,37 @@ How to use this script:
 let wpRequire;
 window.webpackChunkdiscord_app.push([[ Math.random() ], {}, (req) => { wpRequire = req; }]);
 
-let api = Object.values(wpRequire.c).find(x => x?.exports?.getAPIBaseURL).exports.HTTP;
 let ApplicationStreamingStore = Object.values(wpRequire.c).find(x => x?.exports?.default?.getStreamerActiveStreamMetadata).exports.default;
-let VoiceStateStore = Object.values(wpRequire.c).find(x => x?.exports?.default?.getCurrentClientVoiceChannelId).exports.default;
 let QuestsStore = Object.values(wpRequire.c).find(x => x?.exports?.default?.getQuest).exports.default;
-let encodeStreamKey = Object.values(wpRequire.c).find(x => x?.exports?.encodeStreamKey).exports.encodeStreamKey;
-let sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+let FluxDispatcher = Object.values(wpRequire.c).find(x => x?.exports?.default?.flushWaitQueue).exports.default;
 
 let quest = [...QuestsStore.quests.values()].find(x => x.userStatus?.enrolledAt && !x.userStatus?.completedAt && new Date(x.config.expiresAt).getTime() > Date.now())
-let streamData = ApplicationStreamingStore.getCurrentUserActiveStream()
 let isApp = navigator.userAgent.includes("Electron/")
-let isAloneInVC = streamData && Object.keys(VoiceStateStore.getVoiceStatesForChannel(streamData.channelId)).length === 1
 if(!isApp) {
 	console.log("This no longer works in browser. Use the desktop app!")
 } else if(!quest) {
 	console.log("You don't have any uncompleted quests!")
-} else if(!streamData) {
-	console.log("You haven't started a stream!")
-} else if(isAloneInVC) {
-	console.log("You need to join the vc on 1 other account!")
 } else {
-	let streamId = encodeStreamKey(streamData)
+	ApplicationStreamingStore.getStreamerActiveStreamMetadata = () => ({
+		id: quest.config.applicationId,
+		pid: Math.floor(Math.random() * 30000) + 1000,
+		sourceName: null
+	})
+	
 	let secondsNeeded = quest.config.streamDurationRequirementMinutes * 60
-	let heartbeat = async function() {
-		console.log("Completing quest", quest.config.messages.gameTitle, "-", quest.config.messages.questName)
-		while(true) {
-			let res = await api.post({url: `/quests/${quest.id}/heartbeat`, body: {stream_key: streamId}, headers: {"X-Discord-Resource-Optimization-Level": "1"}})
-			let progress = res.body.stream_progress_seconds
-			
-			console.log(`Quest progress: ${progress}/${secondsNeeded}`)
-			
-			if(progress >= secondsNeeded) break;
-			await sleep(30 * 1000)
-		}
+	let fn = data => {
+		let progress = data.userStatus.streamProgressSeconds
+		console.log(`Quest progress: ${progress}/${secondsNeeded}`)
 		
-		console.log("Quest completed!")
+		if(progress >= secondsNeeded) {
+			console.log("Quest completed!")
+			FluxDispatcher.unsubscribe("QUESTS_SEND_HEARTBEAT_SUCCESS", fn)
+		}
 	}
-	heartbeat()
+	FluxDispatcher.subscribe("QUESTS_SEND_HEARTBEAT_SUCCESS", fn)
+	
+	console.log(`Spoofed your stream to ${quest.config.applicationName}. Stay in vc for ${Math.ceil(quest.config.streamDurationRequirementMinutes - (quest.userStatus?.streamProgressSeconds ?? 0) / 60)} more minutes.`)
+	console.log("Remember that you need at least 1 other person to be in the vc!")
 }
 ```
 7. Keep the stream running for 15 minutes
