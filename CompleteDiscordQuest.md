@@ -43,7 +43,7 @@ if(!isApp) {
 	let heartbeat = async function() {
 		console.log("Completing quest", quest.config.messages.gameTitle, "-", quest.config.messages.questName)
 		while(true) {
-			let res = await api.post({url: `/quests/${quest.id}/heartbeat`, body: {stream_key: streamId}})
+			let res = await api.post({url: `/quests/${quest.id}/heartbeat`, body: {stream_key: streamId}, headers: {"X-Discord-Resource-Optimization-Level": "1"}})
 			let progress = res.body.stream_progress_seconds
 			
 			console.log(`Quest progress: ${progress}/${secondsNeeded}`)
